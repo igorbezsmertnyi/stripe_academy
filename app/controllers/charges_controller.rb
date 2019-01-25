@@ -1,6 +1,7 @@
 class ChargesController < ApplicationController
   before_action :set_order
   before_action :set_payment, only: :refund
+  before_action :set_description, only: :create
 
   def new; end
 
@@ -13,7 +14,7 @@ class ChargesController < ApplicationController
     charge = Stripe::Charge.create(
       customer:    customer.id,
       amount:      @order.total.to_i * 100,
-      description: 'Stripe test site',
+      description: description,
       currency:    'usd'
     )
 
@@ -45,7 +46,7 @@ class ChargesController < ApplicationController
 
   private
 
-  attr_reader :order, :payment
+  attr_reader :order, :payment, :description
 
   def set_order
     @order = Order.find(params[:order_id])
@@ -53,5 +54,9 @@ class ChargesController < ApplicationController
 
   def set_payment
     @payment = Payment.find_by(order_id: params[:order_id])
+  end
+
+  def set_description
+    @description = Rails.application.config.stripe_description
   end
 end
