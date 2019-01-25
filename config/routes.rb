@@ -5,7 +5,9 @@ Rails.application.routes.draw do
 
   resources :products,   only: :index
   resources :line_items, only: :create
-  resources :orders,     only: :index
-
-  resources :charges,    only: %i[new create]
+  resources :orders,     only: :index do
+    resources :charges,    only: %i[new create] do
+      post :refund, on: :collection
+    end
+  end
 end

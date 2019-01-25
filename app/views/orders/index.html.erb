@@ -1,10 +1,29 @@
+<% if flash[:error].present? %>
+  <div id="error_explanation">
+    <p><%= flash[:error] %></p>
+  </div>
+<% end %>
+
 <% @orders.each do |order| %>
-  <%= order.id %>:
-  <%= form_tag new_charge_path, method: :get do %>
-    <%= hidden_field_tag :order_id, order.id %>
-    <%= label_tag :amount,'Amount' %>
-    <%= text_field_tag :amount, order.total.to_f %>
-    <%= submit_tag 'Pay' %>
+  <% if order.state == 'incomplete' %>
+    <%= form_tag new_order_charge_path(order), method: :get do %>
+      <%= order.id %>:
+      <%= label_tag :amount,'Amount' %>
+
+      <%= order.total.to_f %>
+      <%= submit_tag 'Pay' %>
+    <% end %>
+  <% elsif order.state == 'completed' %>
+    <%= form_tag refund_order_charges_path(order), method: :post do %>
+      <%= label_tag :amount,'Amount' %>
+
+      <%= order.total.to_f %>
+      <%= submit_tag 'Refund' %>
+    <% end %>
+  <% else %>
+    <%= order.total.to_f %>
+    <strong>refunded</strong>
   <% end %>
+  
   <br/>
 <% end %>

@@ -5,7 +5,7 @@ class LineItemsController < ApplicationController
     order.line_items << LineItem.new(line_item_params)
 
     if order.save
-      render json: order, status: 200
+      redirect_to orders_path
     else
       render json: { errors: order.errors.full_messages }, status: 422
     end

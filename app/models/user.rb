@@ -7,6 +7,6 @@ class User < ApplicationRecord
   has_many :orders
 
   def order
-    orders.last 
+    orders.last if orders.last&.state == 'incomplete'
   end
 end
